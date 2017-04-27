@@ -1,6 +1,21 @@
 from setuptools import setup
 from setuptools import find_packages
 from distutils.extension import Extension
+from distutils.command.build_ext import build_ext
+
+cmplropt = { 'msvc': ['/O3', '/Wall'] }
+defopt = ['-std=c++11', '-O3', '-Wall', '-Wextra', '-Wconversion', '-fno-strict-aliasing']
+
+class build_ext_subclass( build_ext ):
+    def build_extensions(self):
+        cmplr = self.compiler.compiler_type
+        if cmplr in cmplropt:
+           for e in self.extensions:
+               e.extra_compile_args = cmplropt[ cmplr ]
+        else:
+            for e in self.extensions:
+                e.extra_link_args = defopt
+        build_ext.build_extensions(self)
 
 try:
     from Cython.Build import cythonize
@@ -13,21 +28,7 @@ else:
 mod1 = Extension(
     'rocksdb._rocksdb',
     sources,
-    extra_compile_args=[
-        '-std=c++11',
-        '-O3',
-        '-Wall',
-        '-Wextra',
-        '-Wconversion',
-        '-fno-strict-aliasing'
-    ],
-    language='c++',
-    libraries=[
-        'rocksdb',
-        'snappy',
-        'bz2',
-        'z'
-    ]
+    language='c++'
 )
 
 setup(
@@ -45,5 +46,6 @@ setup(
     ext_modules=cythonize([mod1]),
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
-    include_package_data=True
+    include_package_data=True,
+    cmdclass={'build_ext': build_ext_subclass }
 )
