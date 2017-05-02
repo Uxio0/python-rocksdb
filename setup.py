@@ -14,7 +14,7 @@ class build_ext_subclass( build_ext ):
                e.extra_compile_args = cmplropt[ cmplr ]
         else:
             for e in self.extensions:
-                e.extra_link_args = defopt
+                e.extra_compile_args = defopt
         build_ext.build_extensions(self)
 
 try:
