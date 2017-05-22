@@ -4,7 +4,7 @@ from distutils.extension import Extension
 from distutils.command.build_ext import build_ext
 
 cmplropt = { 'msvc': ['/O3', '/Wall'] }
-defopt = ['-std=c++11', '-O3', '-Wall', '-Wextra', '-Wconversion', '-fno-strict-aliasing']
+defopt = ['-std=c++11', '-O3', '-Wall', '-Wextra', '-Wconversion', '-fno-strict-aliasing', '-fPIC']
 
 class build_ext_subclass( build_ext ):
     def build_extensions(self):
